@@ -66,32 +66,21 @@ A modern, colorful, interactive Full-Stack Kids General Knowledge Quiz Web Appli
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Node.js (v18 or higher)
+- Node.js 22.12 or higher (Node.js 24 is also supported)
 - npm (v9 or higher)
 - *(Optional)* MongoDB running locally or MongoDB Atlas connection string.
 
 ### 2. Installation
-Clone the repository and install all dependencies:
+Clone the repository and install all dependencies from the repository root:
 
 ```bash
-# Install root, server, and client dependencies
-npm run install:all
+npm ci
 ```
 
-Or install manually:
-```bash
-# Root
-npm install
+The frontend source is in the root `src/` directory. There are no separate client or server packages to install.
 
-# Backend
-cd server && npm install
-
-# Frontend
-cd ../client && npm install
-```
-
-### 3. Environment Configuration
-Create a `.env` file in the root or `server/` directory (refer to `.env.example`):
+### 3. Backend Availability
+The backend described below is not included in this checkout: `api/index.js` references a missing `server/server.js`. The frontend can be deployed independently, but quiz generation, account authentication, and other `/api` features require restoring and deploying the backend. The following environment example describes that historical backend, not a requirement for building the frontend:
 
 ```env
 PORT=5000
@@ -104,14 +93,14 @@ CLIENT_URL=http://localhost:5173
 ```
 
 ### 4. Running the Development Server
-From the root directory, start both the backend API and frontend client with a single command:
+From the root directory, start the frontend development server:
 
 ```bash
 npm run dev
 ```
 
 - **Frontend Client**: `http://localhost:5173`
-- **Backend API**: `http://localhost:5000`
+- **Backend API**: Not included in this checkout.
 
 ---
 
@@ -119,35 +108,26 @@ npm run dev
 
 ```
 quizkids/
-├── client/                     # React + Vite Frontend
-│   ├── src/
-│   │   ├── components/         # Navbar, Footer, CategoryCard, CustomizerModal, etc.
-│   │   ├── context/            # AuthContext, QuizContext, SoundContext
-│   │   ├── data/               # Categories, Badges, Character Avatars
-│   │   ├── pages/              # LandingPage, Categories, Quiz, Results, Leaderboard, Progress, Admin, Profile, About
-│   │   ├── services/           # api.js API client service
-│   │   ├── utils/              # soundSynth.js Web Audio synthesizer
-│   │   ├── App.jsx             # Route definitions
-│   │   ├── main.jsx            # React root mount
-│   │   └── index.css           # Tailwind custom styles & playful keyframes
-│   ├── index.html              # HTML entry point with Google Fonts & SEO
-│   ├── tailwind.config.js      # Color theme & shadows configuration
-│   └── vite.config.js          # Vite config & dev server proxy
-│
-├── server/                     # Node.js + Express Backend
-│   ├── config/                 # db.js connection & in-memory fallback
-│   ├── controllers/            # questionController, quizController, authController, etc.
-│   ├── data/                   # seedQuestions.js (105+ verified GK questions)
-│   ├── middleware/             # auth.js JWT validation
-│   ├── models/                 # Question, User, QuizAttempt, Category
-│   ├── routes/                 # REST API routes
-│   ├── utils/                  # memoryStore.js, badgeEvaluator.js
-│   └── server.js               # Express entry point
-│
+├── src/                        # React frontend source
+│   ├── components/
+│   ├── context/
+│   ├── data/
+│   ├── pages/
+│   ├── services/               # API client (requires a backend)
+│   ├── utils/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── api/index.js                # Legacy Vercel entry; its server dependency is absent
+├── index.html                  # Vite HTML entry point
+├── vite.config.mjs
+├── tailwind.config.cjs
+├── postcss.config.cjs
+├── netlify.toml                # Root build, dist publish directory, SPA routing
 ├── .env.example
 ├── .gitignore
 ├── README.md
-└── package.json                # Root concurrent workspace scripts
+└── package.json                # Frontend dependencies and scripts
 ```
 
 ---
@@ -179,12 +159,14 @@ quizkids/
 ```bash
 npm run build
 ```
-The optimized production bundle will be generated in `client/dist/`.
+The optimized production bundle will be generated in `dist/`.
 
-### Run production server:
+### Preview the frontend locally:
 ```bash
 npm run start
 ```
+
+Netlify uses the root build command `npm run build` and publishes `dist/`, as configured in `netlify.toml`. The SPA redirect supports direct links to frontend routes. This deploy configuration does not restore the missing backend or enable `/api` endpoints.
 
 ---
 
